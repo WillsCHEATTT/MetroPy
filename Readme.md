@@ -8,7 +8,7 @@ I8,        8        ,8I  88  88  88
     `8a8'     `8a8'      88  88  88  aa    ]8I  aa    ]8I  aa    ]8I  
      `8'       `8'       88  88  88  `"YbbdP"'  `"YbbdP"'  `"YbbdP"'  
                                                                       
-                                                                      
+^ Logo doesnt look good in GitHub :(
 --------------------------------------------------------------------
 
 Hello everyone reading this!! This is my 7th grade science fair project that I decided
@@ -30,7 +30,7 @@ Python 3.7 - 3.9 (Works just fine)
 
 Python 3.0 - 3.6 (Small and easy fix)
 
-[
+
 	Because datetime does not exsist on older versions of python we need to fix 
 	the date and time code. This is a simple two line fix replace the code listed below.
 
@@ -44,7 +44,7 @@ Python 3.0 - 3.6 (Small and easy fix)
 	
 		now = datetime.now()
 
-]
+
 
 That should fix the issue if gmtime and strftime are not imported from time do so
 
