@@ -1,5 +1,4 @@
-## MetroPy
-The program that sits here to "weather" and never be used
+## MetroPy <sub>The program that sits here to "weather" and never be used</sub>
 
 Hello everyone reading this!! This is my 7th grade science fair project that I decided to put on Github.
 
