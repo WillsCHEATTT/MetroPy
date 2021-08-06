@@ -115,15 +115,12 @@ def main():
     
     # Wind Speed
     windspeed = get_class("ListItem--listItem--Gcuav WeatherDetailsListItem--WeatherDetailsListItem--2Coc5", 1, r'\d{1,3} mph')
+    
     # Sunrise Time
     sunrise = get_class("SunriseSunset--sunriseDateItem--3PunQ", 0)
-    #div = weatherSoup.findAll("div", {"class": "SunriseSunset--sunriseDateItem--3PunQ"})
-    #sunrise = div[0].getText()
 
     # Sunset Time
     sunset = get_class("SunriseSunset--sunsetDateItem--3zmvo SunriseSunset--sunriseDateItem--3PunQ", 0)
-    #div = weatherSoup.findAll("div",{"class": "SunriseSunset--sunsetDateItem--3zmvo SunriseSunset--sunriseDateItem--3PunQ"})
-    #sunset = div[0].getText()
 
     # Temperature
     temperature = get_class("CurrentConditions--dataWrapperInner--3Cwsl", 0)
@@ -151,8 +148,7 @@ def main():
     except:
         pass
 
-    # The file building
-
+    # Date & Time
     now = datetime.now()
     # dd/mm/YY H:M
     date_string = now.strftime("%m/%d/%Y")
@@ -162,8 +158,8 @@ def main():
     # date_string = strftime("%Y-%m-%d", gmtime())
     #time_string = strftime("%H:%M", gmtime())
 
-    formatted_text = [date_string, time_string, weather, temperature, windspeed, humidity, realfeel, sunrise[8:],
-                      sunset[6:]]
+    # The file building.
+    formatted_text = [date_string, time_string, weather, temperature, windspeed, humidity, realfeel, sunrise[8:],sunset[6:]]
     formatted_text = ','.join(formatted_text) + "\n"
     file = open("Weather Observation.csv", "a")
     file.write(formatted_text)
@@ -171,6 +167,7 @@ def main():
     print("Successfully Collected Data From " + zipCode)
 
 
+# Menu loop
 while True:
     choice = input("\n1:   Check Logs\n2:   Get Data\n: ")
     if choice == '1':
