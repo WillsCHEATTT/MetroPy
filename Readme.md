@@ -1,4 +1,5 @@
-
+## MetroPy
+# The program that sits here to "weather" and never be used
 Hello everyone reading this!! This is my 7th grade science fair project that I decided to put on Github.
 
 Now that summer break is coming to an end, so has my laziness so I decided to fix some projects. This being one of them from what I know this script was broken since 5-7-2021 or around there. The issue was the developers of weather.com had made some changes to the website, causing my script to stop working. After some revisions I have simplified most of the code :)
