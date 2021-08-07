@@ -1,6 +1,6 @@
 ###########################################################################     
 #                                                                         #     
-#               MetroPY (Weather you like this script or not)             #     
+#             MetroPY ("Weather" you like this script or not)             #     
 #                                                                         #     
 #                                                                         #     
 #  Copyright (c) 2020, Zackery .R. Smith <zackery.smith@hsdgreenbush.org>.#     
