@@ -11,12 +11,13 @@ No matter how good I've made it there are some issues and improvements and I hav
 
 Because I plan on updating this in the future i've put a licence on MetroPy 1.1. Feel  free to use 1.0 without credit as only 1.1+ will have a licence
 
-(C) 2021 Zackery .R. Smith MetroPy
 Code is protected by the GNU3 GPL Licence
 
 - Zackery .R. Smith
 - github.com/WillsCHEATTT
- 
+
+(C) 2021 Zackery .R. Smith MetroPy
+
 --------------------------------------------------------------------
 
 When using older versions of python mainly 3.0 - 3.6 datetime does not exist so some fixes are due below is more info
