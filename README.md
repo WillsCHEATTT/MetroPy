@@ -8,7 +8,7 @@ No matter how good I've made it there are some issues and improvements and I hav
 
 Because I plan on updating this in the future i've put a licence on MetroPy 1.1. Feel  free to use 1.0 without credit as only 1.1+ will have a licence
 
-Code is protected by the GNU3 GPL Licence
+Code is protected by the GNU3 GPL
 
 - Zackery .R. Smith
 - github.com/WillsCHEATTT
