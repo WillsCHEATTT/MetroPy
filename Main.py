@@ -75,22 +75,23 @@ def main():
             continue
         break
     
+    # req will request the websites source                                      
+    req = requests.get('https://weather.com/weather/today/l/' + zipCode + ':4:US')
+                                                                                  
+    # Check if any errors occurred                                              
+    try:                                                                        
+        req.raise_for_status()                                                  
+    except Exception as exc:                                                    
+        print('There was a problem: %s' % exc)                                  
+        return                                                                  
+                                                                                    
+    # This will tell BS4 that we are reading html                               
+    weatherSoup = bs4.BeautifulSoup(req.text, features="html.parser")
+    
+    
     ## Making Quality Of Life Functions
     # Get Item In Class
     def get_class(class_name, index, regex = None):
-        # req will request the websites source                                      
-        req = requests.get('https://weather.com/weather/today/l/' + zipCode + ':4:US')
-                                                                                  
-        # Check if any errors occurred                                              
-        try:                                                                        
-            req.raise_for_status()                                                  
-        except Exception as exc:                                                    
-            print('There was a problem: %s' % exc)                                  
-            return                                                                  
-                                                                                    
-        # This will tell BS4 that we are reading html                               
-        weatherSoup = bs4.BeautifulSoup(req.text, features="html.parser")
-   
         try:
             # If this code functions we know that the div has multi classes so we deal with it diffrently
             div = weatherSoup.findAll("div", {"class": f"{class_name}"})
