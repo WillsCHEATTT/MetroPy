@@ -8,6 +8,7 @@ No matter how good I've made it there are some issues and improvements and I hav
 
 1. get_class() when called opens the website (This means when called it will just make a new website request making the script slower)
 2. 2 parts of data specifically temperature & real feel have to be manually RegEx'ed because of the way "get_class()" determines how to deal with the request. 
+** Look at issue tracker for more info
 
 Because I plan on updating this in the future i've put a licence on MetroPy 1.1. Feel  free to use 1.0 without credit as only 1.1+ will have a licence
 
