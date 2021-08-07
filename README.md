@@ -4,11 +4,7 @@ Hello everyone reading this!! This is my 7th grade science fair project that I d
 
 Now that summer break is coming to an end, so has my laziness so I decided to fix some projects. This being one of them from what I know this script was broken since 5-7-2021 or around there. The issue was the developers of weather.com had made some changes to the website, causing my script to stop working. After some revisions I have simplified most of the code :)
 
-No matter how good I've made it there are some issues and improvements and I have learned from my mistake and I will list those issues now.
-
-1. get_class() when called opens the website (This means when called it will just make a new website request making the script slower)
-2. 2 parts of data specifically temperature & real feel have to be manually RegEx'ed because of the way "get_class()" determines how to deal with the request. 
-** Look at issue tracker for more info
+No matter how good I've made it there are some issues and improvements and I have learned from my mistake, of not tracking issues. For that reason you can find issues in the issue tracker on github.
 
 Because I plan on updating this in the future i've put a licence on MetroPy 1.1. Feel  free to use 1.0 without credit as only 1.1+ will have a licence
 
