@@ -13,7 +13,7 @@ Code is protected by the GNU3 GPL
 - Zackery .R. Smith
 - github.com/WillsCHEATTT
 
-(C) 2021 Zackery .R. Smith MetroPy
+(C) 2020 Zackery .R. Smith MetroPy
 
 --------------------------------------------------------------------
 
