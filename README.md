@@ -1,3 +1,6 @@
+# This project is out-of-date
+If you really want to use this project it wouldn't take very much to fix... This is here for more of a histroic thing
+
 ## MetroPy <sub>The program that sits here to "weather" and never be used</sub>
 
 Hello everyone reading this!! This is my 7th grade science fair project that I decided to put on Github.
