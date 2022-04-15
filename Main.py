@@ -65,7 +65,8 @@ def log_check():
 def main():
     while True:
         print("What is your zip code?")
-        zipCode = input()
+        zipCode = input().strip()
+                            
         # build regex parser for zipcode
         zipcodeRegEx = re.compile(r'^\d{5}$')
         check = zipcodeRegEx.search(zipCode)
