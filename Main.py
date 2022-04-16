@@ -34,17 +34,18 @@ def log_check():
     print("Opening Weather Observation.csv")
     # Read csv and extract all the data inside it
     file = open('Weather Observation.csv', 'r')
-    temp_list = []
+
     contents = []
-    for l in file.readlines():
-        temp_list.append(l)
-    for i in temp_list:
+    
+    for i in file.readlines():
         contents.append(i.strip('\n').split(','))
+    
     ## User Input Section
     usr_input = input(": ")
     if usr_input == '0':
         for i in contents:
             print(i)
+    
     # If statement shorter
     choice = 0
     list_index = -1
