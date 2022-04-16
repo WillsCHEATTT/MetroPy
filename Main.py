@@ -30,6 +30,15 @@ import re
 from datetime import date, time, datetime
 from time import gmtime, strftime
 
+# Regexes by ZackeryRSmith
+regexes = {
+	"temp" : r"tempValue.*(?P<tempature>\b([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
+	"windspeed" : r"(?P<windspeed>([0-9]|[1-9][0-9]|100).mph)",
+	"humidity" : r"PercentageValue.*(?P<humidity>\d([0-9]|[1-9][0-9]|100)%)",
+	"realfeel" : r"feelsLikeTempValue.*(?P<realfeel>\d([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)"
+}
+		
+
 def log_check():
     print("Opening Weather Observation.csv")
     # Read csv and extract all the data inside it
@@ -64,7 +73,9 @@ def log_check():
 
 def parse_spans(spans):
 
-    # Insert regex magic here, because birdy is a regex wizard
+    # ZackeryRSmith made all the regex, no credits to me
+
+
     return []
 
 
