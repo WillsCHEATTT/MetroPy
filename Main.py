@@ -71,6 +71,12 @@ def log_check():
     print("Closing Weather Observation.csv")
     file.close()
 
+def get_sky_observation():
+    DOM = etree.HTML(str(other))
+    # Grabs the text from the Xpath -mrHeavenli
+    return DOM.xpath("/html/body/div[1]/main/div[2]/main/div[1]/div/section/div/div[2]/div[1]/div[1]/div[1]/text()")[0]
+
+
 def parse_spans(spans):
 
     # ZackeryRSmith made all the regex, no credits to me
@@ -105,7 +111,8 @@ def main():
                                                                                     
     # This will tell BS4 that we are reading html                               
     weatherSoup = bs4.BeautifulSoup(req.text, features="html.parser")
-    
+    other = bs4.BeautifulSoup(req.text, 'lxml')
+
     
     spans = weatherSoup.find_all("span")
     formatted_data = parse_spans(spans)

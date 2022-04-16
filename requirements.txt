@@ -2,4 +2,5 @@ bs4
 requests
 datetime
 time <-- Should be pre-installed
+lxml
 
