@@ -19,18 +19,14 @@
 #  along with this program. If not, see <http://www.gnu.org/licenses/>.   #     
 #                                                                         #     
 ###########################################################################
-
-
-# **Additional Notes
-# Please understand i'm very new to website stuff so please bear in mind that my var names may be named improperly named.
-
+####     Huge thanks to mrHeavenli for updated webscraping method!     ####
+###########################################################################
 import requests
 import bs4
 import re
 from datetime import date, time, datetime
 from time import gmtime, strftime
 
-# Regexes by ZackeryRSmith
 regexes = {
 	"temp" : r"tempValue.*(?P<tempature>\b([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
 	"windspeed" : r"(?P<windspeed>([0-9]|[1-9][0-9]|100).mph)",
@@ -73,15 +69,11 @@ def log_check():
 
 def get_sky_observation():
     DOM = etree.HTML(str(other))
-    # Grabs the text from the Xpath -mrHeavenli
+    # Grabs the text from the Xpath
     return DOM.xpath("/html/body/div[1]/main/div[2]/main/div[1]/div/section/div/div[2]/div[1]/div[1]/div[1]/text()")[0]
 
 
-def parse_spans(spans):
-
-    # ZackeryRSmith made all the regex, no credits to me
-
-
+def parse_spans(spans):  # Unfinished
     return []
 
 
