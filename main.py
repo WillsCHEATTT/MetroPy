@@ -25,9 +25,6 @@
 import requests
 import bs4
 import re
-
-# Missing dependencies for the module "etree"???
-
 from datetime import date, time, datetime
 from time import gmtime, strftime
 
@@ -53,6 +50,7 @@ def parse_site(
     weatherdata = [date.today().strftime("%m/%d/%y"), datetime.now().strftime("%H:%M")]+[""]*7
 
     span_string = "".join([str(span) for span in weathersoup.find_all("span")])
+    div_string = "".join([str(div) for div in weathersoup.find_all("div")])
     data = [re.search(regex, span_string) for regex in regexes.values()]
     
     # Temperature, Windspeed, Humidity, and Realfeel
@@ -65,6 +63,8 @@ def parse_site(
             if re.match(".*SunriseSunset--dateValue.*", str(i))
     ]
     weatherdata[7], weatherdata[8] = matches[0], matches[1]
+    
+    print(re.search())
 
     return weatherdata
 
