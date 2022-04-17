@@ -32,7 +32,7 @@ from datetime import date, time, datetime
 from time import gmtime, strftime
 
 regexes = {
-	"temp" : r"tempValue.*(?P<tempature>\b([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
+	"tempature" : r"tempValue.*(?P<tempature>\b([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
 	"windspeed" : r"(?P<windspeed>([0-9]|[1-9][0-9]|100).mph)",
 	"humidity" : r"PercentageValue.*(?P<humidity>\d([0-9]|[1-9][0-9]|100)%)",
 	"realfeel" : r"feelsLikeTempValue.*(?P<realfeel>\d([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
@@ -57,29 +57,23 @@ def log_check():
         except (ValueError, IndexError): return                                 
 
 def parse_site(
-        weatherSoup: bs4.BeautifulSoup, 
+        weathersoup: bs4.BeautifulSoup, 
     ) -> list:
     weatherdata = [date.today().strftime("%m/%d/%y"), datetime.now().strftime("%H:%M")]+[""]*7
 
-    span_string = "".join([str(span) for span in weatherSoup.find_all("span")])
+    span_string = "".join([str(span) for span in weathersoup.find_all("span")])
     data = [re.search(regex, span_string) for regex in regexes.values()]
     
-    ## Unreliable code.
-    #weatherdata[2] = etree.HTML(str(extradata)).xpath(
-    #        "/html/body/div[1]/main/div[2]/main/div[1]/div/section/div/div[2]/div[1]/div[1]/div[1]/text()"
-    #)[0]
-    weatherdata[3] = data[0].group("tempature")
-    weatherdata[4] = data[1].group("windspeed")
-    weatherdata[5] = data[2].group("humidity")
-    weatherdata[6] = data[3].group("realfeel")
+    # Temperature, Windspeed, Humidity, and Realfeel
+    for i in range(3, 6+1): weatherdata[i] = data[i-3].group(list(regexes.keys())[i-3])
+    
     # Sunset & Sunrise
     matches = [
             re.sub(r"[apm\s]", "", i.text) 
-            for i in weatherSoup.find_all("p")                  
+            for i in weathersoup.find_all("p")                  
             if re.match(".*SunriseSunset--dateValue.*", str(i))
     ]
-    weatherdata[7] = matches[0]
-    weatherdata[8] = matches[1]
+    weatherdata[7], weatherdata[8] = matches[0], matches[1]
 
     return weatherdata
 
@@ -103,11 +97,9 @@ def main():
         print('There was a problem: %s' % exc)                                  
         return                                                                  
                                                                                     
-    weatherSoup = bs4.BeautifulSoup(req.text, features="html.parser")
-    #extradata = bs4.BeautifulSoup(req.text, 'lxml')
+    weathersoup = bs4.BeautifulSoup(req.text, features="html.parser")
+    weatherdata = parse_site(weathersoup)
 
-    weatherdata = parse_site(weatherSoup)
-    
     try:
         with open("Weather Observation.csv", "a") as log_file: log_file.write("".join(weatherdata))
     except: pass  
