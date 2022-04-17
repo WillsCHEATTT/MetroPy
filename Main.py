@@ -36,36 +36,13 @@ regexes = {
 		
 
 def log_check():
-    print("Opening Weather Observation.csv")
-    # Read csv and extract all the data inside it
-    file = open('Weather Observation.csv', 'r')
-
-    contents = []
-    
-    for i in file.readlines():
-        contents.append(i.strip('\n').split(','))
-    
-    ## User Input Section
-    usr_input = input(": ")
-    if usr_input == '0':
-        for i in contents:
-            print(i)
-    
-    # If statement shorter
-    choice = 0
-    list_index = -1
-    for i in range(9):
-        i += 1
-        choice += 1
-        list_index += 1
-        if usr_input == str(choice):
-            for i in contents:
-                print(i[list_index])
-            break
-    else:
-        pass
-    print("Closing Weather Observation.csv")
-    file.close()
+    with open('Weather Observation.csv', 'r') as logfile:                       
+        contents = [x.strip("\n").split(",") for x in logfile.readlines()]      
+        userinput = input()                                                     
+        try:                                                                    
+            if int(userinput)-1 <= len(contents):                               
+                for i in range(0, len(contents)): print(contents[i][int(userinput)-1])
+        except (ValueError, IndexError): return                                 
 
 def get_sky_observation():
     DOM = etree.HTML(str(other))
