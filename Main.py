@@ -61,7 +61,7 @@ def main():
         if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?").strip()) is None:
             print("Hmm.. I don't recognize that as a proper zipcode (example zipcode: 75115)")  
             continue                                                            
-    break                                                                   
+        break                                                                   
 
     
     # req will request the websites source                                      
