@@ -37,15 +37,6 @@ regexes = {
 	"humidity" : r"PercentageValue.*(?P<humidity>\d([0-9]|[1-9][0-9]|100)%)",
 	"realfeel" : r"feelsLikeTempValue.*(?P<realfeel>\d([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
 }
-		
-def get_sun_times(weatherSoup: bs4.BeautifulSoup):
-    matches = []
-    para = weatherSoup.find_all("p")   
-    for j in para:
-        if re.match(".*SunriseSunset--dateValue.*", str(j)):
-            matches.append(re.sub(r"[apm\s]", "", j.text))
-
-    return matches
 
 def log_check():
     with open('Weather Observation.csv', 'r') as logfile:                       
