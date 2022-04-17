@@ -55,25 +55,20 @@ def parse_spans(spans):  # Unfinished
 
 
 def main():
-    while True:
-        print("What is your zip code?")
-        zipCode = input().strip()
-                            
-        # build regex parser for zipcode
-        zipcodeRegEx = re.compile(r'^\d{5}$')
-        check = zipcodeRegEx.search(zipCode)
-        # "Basic" Zipcode Check
-        if check is None:
-            print("Hmm.. I don't recognize " + zipCode + " as a proper zipcode. Use digit like 75115")
-            continue
-        break
+    # "Basic" Zipcode Check                                                     
+    zipcode = None                                                              
+    while True:                                                                 
+        if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?").strip()) is None:
+            print("Hmm.. I don't recognize that as a proper zipcode (example zipcode: 75115)")  
+            continue                                                            
+    break                                                                   
+
     
     # req will request the websites source                                      
     req = requests.get('https://weather.com/weather/today/l/' + zipCode + ':4:US')
                                                                                   
     # Check if any errors occurred                                              
-    try:                                                                        
-        req.raise_for_status()                                                  
+    try: req.raise_for_status()                                                  
     except Exception as exc:                                                    
         print('There was a problem: %s' % exc)                                  
         return                                                                  
@@ -86,18 +81,15 @@ def main():
     spans = weatherSoup.find_all("span")
     formatted_data = parse_spans(spans)
     
-    file = open("Weather Observation.csv", "a")
-    file.write(formatted_data)
-    file.close()
+    try: with open("Weather Observation.csv", "a") as log_file: log_file.write(formatted_data)
+    except: pass  
+
     print("Successfully Collected Data From " + zipCode)
 
 
 # Menu loop
 while True:
     choice = input("\n1:   Check Logs\n2:   Get Data\n: ")
-    if choice == '1':
-        log_check()
-    elif choice == '2':
-        main()
-    else:
-        continue
+    if choice == '1': log_check()
+    elif choice == '2': main()
+    else: continue
