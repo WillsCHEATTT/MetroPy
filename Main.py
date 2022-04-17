@@ -44,10 +44,6 @@ def log_check():
                 for i in range(0, len(contents)): print(contents[i][int(userinput)-1])
         except (ValueError, IndexError): return                                 
 
-def get_sky_observation():
-    DOM = etree.HTML(str(other))
-    # Grabs the text from the Xpath
-    return DOM.xpath("/html/body/div[1]/main/div[2]/main/div[1]/div/section/div/div[2]/div[1]/div[1]/div[1]/text()")[0]
 
 def get_sun_times():
     matches = []
@@ -83,7 +79,6 @@ def main():
                                                                                     
     # This will tell BS4 that we are reading html                               
     weatherSoup = bs4.BeautifulSoup(req.text, features="html.parser")
-    other = bs4.BeautifulSoup(req.text, 'lxml')
 
     
     spans = weatherSoup.find_all("span")
