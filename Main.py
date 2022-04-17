@@ -49,6 +49,14 @@ def get_sky_observation():
     # Grabs the text from the Xpath
     return DOM.xpath("/html/body/div[1]/main/div[2]/main/div[1]/div/section/div/div[2]/div[1]/div[1]/div[1]/text()")[0]
 
+def get_sun_times():
+    matches = []
+    para = soup.find_all("p")
+    for j in para:
+        if re.match(".*SunriseSunset--dateValue.*", str(j)):
+            matches.append(re.sub("[apm\s]", "", j.text))
+
+    return matches
 
 def parse_spans(spans):  # Unfinished
     return []
