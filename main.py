@@ -3,7 +3,7 @@
 #             MetroPY ("Weather" you like this script or not)             #
 #                                                                         #
 #                                                                         #
-#  Copyright (c) 2020, Zackery .R. Smith <zackery.smith@hsdgreenbush.org>.#
+#  Copyright (c) 2022, Zackery .R. Smith <zackery.smith@hsdgreenbush.org>.#
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
