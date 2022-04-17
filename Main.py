@@ -21,9 +21,13 @@
 ###########################################################################
 ####     Huge thanks to mrHeavenli for updated webscraping method!     ####
 ###########################################################################
+
 import requests
 import bs4
 import re
+
+# Missing dependencies for the module "etree"???
+
 from datetime import date, time, datetime
 from time import gmtime, strftime
 
@@ -34,6 +38,16 @@ regexes = {
 	"realfeel" : r"feelsLikeTempValue.*(?P<realfeel>\d([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)"
 }
 		
+def get_sun_times():
+    matches = []
+    # "soup" is not a module do you mean bs4?
+    # find_all is not a method found in bs4
+    para = soup.find_all("p")   
+    for j in para:
+        if re.match(".*SunriseSunset--dateValue.*", str(j)):
+            matches.append(re.sub("[apm\s]", "", j.text))
+
+    return matches
 
 def log_check():
     with open('Weather Observation.csv', 'r') as logfile:                       
@@ -44,14 +58,24 @@ def log_check():
                 for i in range(0, len(contents)): print(contents[i][int(userinput)-1])
         except (ValueError, IndexError): return                                 
 
-def get_sky_observation():
-    DOM = etree.HTML(str(other))
-    # Grabs the text from the Xpath
-    return DOM.xpath("/html/body/div[1]/main/div[2]/main/div[1]/div/section/div/div[2]/div[1]/div[1]/div[1]/text()")[0]
+def parse_spans(spans, extradata):
+    weatherdata = [date.today().strftime("%m/%d/%y"), datetime.now().strftime("%H:%M")]+[""]*7
 
+    span_string = "".join([str(span) for span in spans])
+    data = [re.search(regex, span_string) for regex in regexes.values()]
+    
+    ## Unreliable code.
+    #weatherdata[2] = etree.HTML(str(extradata)).xpath(
+    #        "/html/body/div[1]/main/div[2]/main/div[1]/div/section/div/div[2]/div[1]/div[1]/div[1]/text()"
+    #)[0]
+    weatherdata[3] = data[0].group("tempature")
+    weatherdata[4] = data[1].group("windspeed")
+    weatherdata[5] = data[2].group("humidity")
+    weatherdata[6] = data[3].group("realfeel")
+    # Sunset time here
+    # Sunrise time here
 
-def parse_spans(spans):  # Unfinished
-    return []
+    return weatherdata
 
 
 def main():
@@ -65,7 +89,7 @@ def main():
 
     
     # req will request the websites source                                      
-    req = requests.get('https://weather.com/weather/today/l/' + zipCode + ':4:US')
+    req = requests.get('https://weather.com/weather/today/l/' + zipcode + ':4:US')
                                                                                   
     # Check if any errors occurred                                              
     try: req.raise_for_status()                                                  
@@ -73,18 +97,17 @@ def main():
         print('There was a problem: %s' % exc)                                  
         return                                                                  
                                                                                     
-    # This will tell BS4 that we are reading html                               
     weatherSoup = bs4.BeautifulSoup(req.text, features="html.parser")
-    other = bs4.BeautifulSoup(req.text, 'lxml')
+    extradata = bs4.BeautifulSoup(req.text, 'lxml')
 
-    
     spans = weatherSoup.find_all("span")
-    formatted_data = parse_spans(spans)
+    weatherdata = parse_spans(spans, extradata)
     
-    try: with open("Weather Observation.csv", "a") as log_file: log_file.write(formatted_data)
+    try:
+        with open("Weather Observation.csv", "a") as log_file: log_file.write("".join(weatherdata))
     except: pass  
 
-    print("Successfully Collected Data From " + zipCode)
+    print("Successfully Collected Data From " + zipcode)
 
 
 # Menu loop
