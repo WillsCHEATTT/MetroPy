@@ -35,17 +35,15 @@ regexes = {
 	"temp" : r"tempValue.*(?P<tempature>\b([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
 	"windspeed" : r"(?P<windspeed>([0-9]|[1-9][0-9]|100).mph)",
 	"humidity" : r"PercentageValue.*(?P<humidity>\d([0-9]|[1-9][0-9]|100)%)",
-	"realfeel" : r"feelsLikeTempValue.*(?P<realfeel>\d([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)"
+	"realfeel" : r"feelsLikeTempValue.*(?P<realfeel>\d([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
 }
 		
-def get_sun_times():
+def get_sun_times(weatherSoup: bs4.BeautifulSoup):
     matches = []
-    # "soup" is not a module do you mean bs4?
-    # find_all is not a method found in bs4
-    para = soup.find_all("p")   
+    para = weatherSoup.find_all("p")   
     for j in para:
         if re.match(".*SunriseSunset--dateValue.*", str(j)):
-            matches.append(re.sub("[apm\s]", "", j.text))
+            matches.append(re.sub(r"[apm\s]", "", j.text))
 
     return matches
 
@@ -58,10 +56,12 @@ def log_check():
                 for i in range(0, len(contents)): print(contents[i][int(userinput)-1])
         except (ValueError, IndexError): return                                 
 
-def parse_spans(spans, extradata):
+def parse_site(
+        weatherSoup: bs4.BeautifulSoup, 
+    ) -> list:
     weatherdata = [date.today().strftime("%m/%d/%y"), datetime.now().strftime("%H:%M")]+[""]*7
 
-    span_string = "".join([str(span) for span in spans])
+    span_string = "".join([str(span) for span in weatherSoup.find_all("span")])
     data = [re.search(regex, span_string) for regex in regexes.values()]
     
     ## Unreliable code.
@@ -72,8 +72,14 @@ def parse_spans(spans, extradata):
     weatherdata[4] = data[1].group("windspeed")
     weatherdata[5] = data[2].group("humidity")
     weatherdata[6] = data[3].group("realfeel")
-    # Sunset time here
-    # Sunrise time here
+    # Sunset & Sunrise
+    matches = [
+            re.sub(r"[apm\s]", "", i.text) 
+            for i in weatherSoup.find_all("p")                  
+            if re.match(".*SunriseSunset--dateValue.*", str(i))
+    ]
+    weatherdata[7] = matches[0]
+    weatherdata[8] = matches[1]
 
     return weatherdata
 
@@ -82,7 +88,7 @@ def main():
     # "Basic" Zipcode Check                                                     
     zipcode = None                                                              
     while True:                                                                 
-        if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?").strip()) is None:
+        if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?\n:").strip()) is None:
             print("Hmm.. I don't recognize that as a proper zipcode (example zipcode: 75115)")  
             continue                                                            
         break                                                                   
@@ -98,10 +104,9 @@ def main():
         return                                                                  
                                                                                     
     weatherSoup = bs4.BeautifulSoup(req.text, features="html.parser")
-    extradata = bs4.BeautifulSoup(req.text, 'lxml')
+    #extradata = bs4.BeautifulSoup(req.text, 'lxml')
 
-    spans = weatherSoup.find_all("span")
-    weatherdata = parse_spans(spans, extradata)
+    weatherdata = parse_site(weatherSoup)
     
     try:
         with open("Weather Observation.csv", "a") as log_file: log_file.write("".join(weatherdata))
