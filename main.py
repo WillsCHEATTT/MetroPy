@@ -36,7 +36,7 @@ regexes = {
 	"windspeed" : r"(?P<windspeed>([0-9]|[1-9][0-9]|100).mph)",
 	"humidity" : r"PercentageValue.*(?P<humidity>\d([0-9]|[1-9][0-9]|100)%)",
 	"realfeel" : r"feelsLikeTempValue.*(?P<realfeel>\d([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
-	"weatherobservation" : "<div class=\"CurrentConditions--phraseValue--.*\" data-testid=\"wxPhrase\">.*</div>"
+	"weatherobservation" : "CurrentConditions--phraseValue--.+?>(?P<weatherob>.+?(?=<))"
 }
 
 def log_check():
