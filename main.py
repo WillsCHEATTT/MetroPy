@@ -33,7 +33,7 @@ regexes = {
 	"windspeed" : r"(?P<windspeed>([0-9]|[1-9][0-9]|100).mph)",
 	"humidity" : r"PercentageValue.*(?P<humidity>\d([0-9]|[1-9][0-9]|100)%)",
 	"realfeel" : r"feelsLikeTempValue.*(?P<realfeel>\d([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
-	"weatherobservation" : "CurrentConditions--phraseValue--.+?>(?P<weatherob>.+?(?=<))"
+	"weatherob" : r"CurrentConditions--phraseValue--.+?>(?P<weatherob>.+?(?=<))"
 }
 
 def log_check():
@@ -51,9 +51,13 @@ def parse_site(
     weatherdata = [date.today().strftime("%m/%d/%y"), datetime.now().strftime("%H:%M")]+[""]*7
 
     span_string = "".join([str(span) for span in weathersoup.find_all("span")])
-    div_string = "".join([str(div) for div in weathersoup.find_all("div")])
     data = [re.search(regex, span_string) for regex in regexes.values()]
 
+    # Weather Observation
+    weatherdata[2] = re.search(
+            r"CurrentConditions--phraseValue--.+?>(?P<weatherob>.+?(?=<))", 
+            "".join([str(div) for div in weathersoup.find_all("div")])
+    ).group("weatherob")
     # Temperature, Windspeed, Humidity, and Realfeel
     for i in range(3, 6+1): weatherdata[i] = data[i-3].group(list(regexes.keys())[i-3])
 
@@ -65,7 +69,6 @@ def parse_site(
     ]
     weatherdata[7], weatherdata[8] = matches[0], matches[1]
     
-    print(re.search())
 
     return weatherdata
 
@@ -93,7 +96,7 @@ def main():
     weatherdata = parse_site(weathersoup)
 
     try:
-        with open("Weather Observation.csv", "a") as log_file: log_file.write("".join(weatherdata))
+        with open("Weather Observation.csv", "a") as log_file: log_file.write(",".join(weatherdata)+"\n")
     except: pass
 
     print("Successfully Collected Data From " + zipcode)
