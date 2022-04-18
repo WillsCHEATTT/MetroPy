@@ -25,8 +25,9 @@
 import requests
 import bs4
 import re
+from typing import Optional
 from datetime import date, time, datetime
-from time import gmtime, strftime
+from time import gmtime, strftime, sleep
 
 regexes = {
 	"tempature" : r"tempValue.*(?P<tempature>\b([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
@@ -73,14 +74,14 @@ def parse_site(
     return weatherdata
 
 
-def main():
+def main(zipcode: Optional[str]=None):
     # "Basic" Zipcode Check
-    zipcode = None
-    while True:
-        if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?\n:").strip()) is None:
-            print("Hmm.. I don't recognize that as a proper zipcode (example zipcode: 75115)")
-            continue
-        break
+    if zipcode == None:
+        while True:
+            if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?\n:").strip()) is None:
+                print("Hmm.. I don't recognize that as a proper zipcode (example zipcode: 75115)")
+                continue
+            break
 
 
     # req will request the websites source
@@ -101,10 +102,17 @@ def main():
 
     print("Successfully Collected Data From " + zipcode)
 
+    return zipcode
 
 # Menu loop
 while True:
     choice = input("\n1:   Check Logs\n2:   Get Data\n: ")
     if choice == '1': log_check()
-    elif choice == '2': main()
+    elif choice == '2': 
+        zipcode = main()
+        if input("Would you like to loop this process? [y, N]").lower() == "y":
+            print("Ok, press ctrl+c to cancel")
+            while True:
+                try: main(str(zipcode)); sleep(60*10)
+                except: sleep(60*5); continue
     else: continue
