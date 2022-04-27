@@ -26,8 +26,8 @@ import requests
 import bs4
 import re
 from typing import Optional
-from datetime import date, time, datetime
-from time import gmtime, strftime, sleep
+from datetime import date, datetime
+from time import sleep
 
 regexes = {
 	"tempature" : r"tempValue.*(?P<tempature>\b([0-9]|[1-9][0-9]|1[0-9]{2}|200)°)",
@@ -42,7 +42,9 @@ def log_check():
         contents = [x.strip("\n").split(",") for x in logfile.readlines()]
         userinput = input()
         try:
-            if int(userinput)-1 <= len(contents):
+            if int(userinput) == 0:
+                for entry in contents: print(", ".join(entry))
+            elif int(userinput)-1 <= len(contents):
                 for i in range(0, len(contents)): print(contents[i][int(userinput)-1])
         except (ValueError, IndexError): return
 
@@ -70,15 +72,16 @@ def parse_site(
     ]
     weatherdata[7], weatherdata[8] = matches[0], matches[1]
     
-
     return weatherdata
 
 
-def main(zipcode: Optional[str]=None):
+def main(
+        zipcode: Optional[str]=None
+    ) -> str:
     # "Basic" Zipcode Check
     if zipcode == None:
         while True:
-            if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?\n:").strip()) is None:
+            if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?\n: ").strip()) is None:
                 print("Hmm.. I don't recognize that as a proper zipcode (example zipcode: 75115)")
                 continue
             break
@@ -89,14 +92,13 @@ def main(zipcode: Optional[str]=None):
 
     # Check if any errors occurred
     try: req.raise_for_status()
-    except Exception as exc:
-        print('There was a problem: %s' % exc)
-        return
+    except Exception as exc: 
+        print('There was a problem: %s' % exc); return zipcode
 
     weathersoup = bs4.BeautifulSoup(req.text, features="html.parser")
     weatherdata = parse_site(weathersoup)
 
-    try:
+    try: 
         with open("Weather Observation.csv", "a") as log_file: log_file.write(",".join(weatherdata)+"\n")
     except: pass
 
