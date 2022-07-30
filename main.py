@@ -22,9 +22,9 @@
 ####     Huge thanks to mrHeavenli for updated webscraping method!     ####
 ###########################################################################
 
-import requests
-import bs4
-import re
+from requests import get
+from bs4 import BeautifulSoup
+from re import sub, match, search, compile
 from typing import Optional
 from datetime import date, datetime
 from time import sleep
@@ -49,15 +49,15 @@ def log_check():
         except (ValueError, IndexError): return
 
 def parse_site(
-        weathersoup: bs4.BeautifulSoup,
+        weathersoup: BeautifulSoup,
     ) -> list:
     weatherdata = [date.today().strftime("%m/%d/%y"), datetime.now().strftime("%H:%M")]+[""]*7
 
     span_string = "".join([str(span) for span in weathersoup.find_all("span")])
-    data = [re.search(regex, span_string) for regex in regexes.values()]
+    data = [search(regex, span_string) for regex in regexes.values()]
 
     # Weather Observation
-    weatherdata[2] = re.search(
+    weatherdata[2] = search(
             r"CurrentConditions--phraseValue--.+?>(?P<weatherob>.+?(?=<))", 
             "".join([str(div) for div in weathersoup.find_all("div")])
     ).group("weatherob")
@@ -66,9 +66,9 @@ def parse_site(
 
     # Sunset & Sunrise
     matches = [
-            re.sub(r"[apm\s]", "", i.text)
+            sub(r"[apm\s]", "", i.text)
             for i in weathersoup.find_all("p")
-            if re.match(".*SunriseSunset--dateValue.*", str(i))
+            if match(".*SunriseSunset--dateValue.*", str(i))
     ]
     weatherdata[7], weatherdata[8] = matches[0], matches[1]
     
@@ -81,21 +81,21 @@ def main(
     # "Basic" Zipcode Check
     if zipcode == None:
         while True:
-            if re.compile(r"^\d{5}$").search(zipcode := input("What is your zip code?\n: ").strip()) is None:
+            if compile(r"^\d{5}$").search(zipcode := input("What is your zip code?\n: ").strip()) is None:
                 print("Hmm.. I don't recognize that as a proper zipcode (example zipcode: 75115)")
                 continue
             break
 
 
     # req will request the websites source
-    req = requests.get('https://weather.com/weather/today/l/' + zipcode + ':4:US')
+    req = get('https://weather.com/weather/today/l/' + zipcode + ':4:US')
 
     # Check if any errors occurred
     try: req.raise_for_status()
     except Exception as exc: 
         print('There was a problem: %s' % exc); return zipcode
 
-    weathersoup = bs4.BeautifulSoup(req.text, features="html.parser")
+    weathersoup = BeautifulSoup(req.text, features="html.parser")
     weatherdata = parse_site(weathersoup)
 
     try: 
