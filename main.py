@@ -39,44 +39,44 @@ regexes = {
 
 
 def log_check():
-    with open("Weather Observation.csv") as logfile:
-        contents = [x.strip("\n").split(",") for x in logfile.readlines()]
-        try:
-		userinput = int(input())
-		if userinput == 0:
-			for entry in contents:
-				print(", ".join(entry))
-            	elif userinput-1 <= len(contents):
-                	for i in range(0, len(contents)): 
-				print(contents[i][userinput-1])
-        except (ValueError, IndexError): 
-		return
+	with open("Weather Observation.csv") as logfile:
+		contents = [x.strip("\n").split(",") for x in logfile.readlines()]
+        	try:
+			userinput = int(input())
+			if userinput == 0:
+				for entry in contents:
+					print(", ".join(entry))
+            		elif userinput-1 <= len(contents):
+                		for i in range(0, len(contents)): 
+					print(contents[i][userinput-1])
+        	except (ValueError, IndexError): 
+			return
 
 
 def parse_site(weathersoup: BeautifulSoup) -> list:
-    weatherdata = datetime.now().strftime("%m/%d/%Y %H:%M").split(" ")+[""]*7
+	weatherdata = datetime.now().strftime("%m/%d/%Y %H:%M").split(" ")+[""]*7
 
-    span_string = "".join([str(span) for span in weathersoup.find_all("span")])
-    data = [search(regex, span_string) for regex in regexes.values()]
+	span_string = "".join([str(span) for span in weathersoup.find_all("span")])
+    	data = [search(regex, span_string) for regex in regexes.values()]
 
-    # Weather Observation
-    weatherdata[2] = search(
-            r"CurrentConditions--phraseValue--.+?>(?P<weatherob>.+?(?=<))", 
-            "".join([str(div) for div in weathersoup.find_all("div")])
-    ).group("weatherob")
-    # Temperature, Windspeed, Humidity, and Realfeel
-    for i in range(3, 6+1): 
-	weatherdata[i] = data[i-3].group(list(regexes.keys())[i-3])
+    	# Weather Observation
+    	weatherdata[2] = search(
+		r"CurrentConditions--phraseValue--.+?>(?P<weatherob>.+?(?=<))", 
+            	"".join([str(div) for div in weathersoup.find_all("div")])
+    	).group("weatherob")
+    	# Temperature, Windspeed, Humidity, and Realfeel
+    	for i in range(3, 6+1): 
+		weatherdata[i] = data[i-3].group(list(regexes.keys())[i-3])
 
-    # Sunset & Sunrise
-    matches = [
-            sub(r"[apm\s]", "", i.text)
-            for i in weathersoup.find_all("p")
-            if match(".*SunriseSunset--dateValue.*", str(i))
-    ]
-    weatherdata[7], weatherdata[8] = matches[0], matches[1]
+    	# Sunset & Sunrise
+    	matches = [
+        	sub(r"[apm\s]", "", i.text)
+            	for i in weathersoup.find_all("p")
+            	if match(".*SunriseSunset--dateValue.*", str(i))
+    	]
+   	weatherdata[7], weatherdata[8] = matches[0], matches[1]
     
-    return weatherdata
+    	return weatherdata
 
 
 def get_zipcode() -> str:
@@ -88,43 +88,42 @@ def get_zipcode() -> str:
 	
 
 def main(zipcode: Optional[str]=None) -> str:
-    # "Basic" Zipcode Check
-    if zipcode is None:
-	zipcode = get_zipcode()
+	# "Basic" Zipcode Check
+    	if zipcode is None:
+		zipcode = get_zipcode()
 
-    # req will request the websites source
-    req = get("https://weather.com/weather/today/l/" + zipcode + ":4:US")
+	# req will request the websites source
+    	req = get("https://weather.com/weather/today/l/" + zipcode + ":4:US")
 
-    # Check if any errors occurred
-    try: 
-	req.raise_for_status()
-    except Exception as exc: 
-        print("There was a problem: " + exc)
-	return zipcode
+    	# Check if any errors occurred
+    	try: 
+		req.raise_for_status()
+    	except Exception as exc: 
+        	print("There was a problem: " + exc)
+		return zipcode
 
-    weathersoup = BeautifulSoup(req.text, features="html.parser")
-    weatherdata = parse_site(weathersoup)
+    	weathersoup = BeautifulSoup(req.text, features="html.parser")
+    	weatherdata = parse_site(weathersoup)
 
-    with open("Weather Observation.csv", "a") as log_file: 
-	log_file.write(",".join(weatherdata)+"\n")
+   	with open("Weather Observation.csv", "a") as log_file: 
+		log_file.write(",".join(weatherdata)+"\n")
 
-    print("Successfully Collected Data From " + zipcode)
+    	print("Successfully Collected Data From " + zipcode)
 
-    return zipcode
+    	return zipcode
 
 # Menu loop
 while True:
-    choice = input("\n1:   Check Logs\n2:   Get Data\n: ")
-    if choice == "1": 
-	log_check()
-    elif choice == "2": 
-        zipcode = main()
-        if input("Would you like to loop this process? [y, N]").lower() == "y":
-            print("Ok, press ctrl+c to cancel")
-            while True:
-                try: 
-			main(str(zipcode))
-			sleep(60*10)
-                except: 
-			sleep(60*5)
-			continue
+	choice = input("\n1:   Check Logs\n2:   Get Data\n: ")
+    	if choice == "1": 
+		log_check()
+    	elif choice == "2": 
+        	zipcode = main()
+        	if input("Would you like to loop this process? [y, N]").lower() == "y":
+            	print("Ok, press ctrl+c to cancel")
+            	while True:
+                	try: 
+				main(str(zipcode))
+				sleep(60*10)
+                	except: 
+				sleep(60*5)
